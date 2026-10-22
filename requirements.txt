@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+requests
+soundfile
+transformers
+
+# small add-on for runtime safety
+# torch is needed by the backend model path
+# If Render installs from this file, torch may still be large but will work.
+torch
