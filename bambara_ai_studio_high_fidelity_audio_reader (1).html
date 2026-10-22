@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bamanankan AI Studio & High-Fidelity Audio Reader</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
         tailwind.config = {
@@ -14,10 +12,7 @@
             theme: {
                 extend: {
                     colors: {
-                        amber: {
-                            400: '#fbbf24',
-                            500: '#f59e0b',
-                        }
+                        amber: { 400: '#fbbf24', 500: '#f59e0b' }
                     }
                 }
             }
@@ -25,34 +20,15 @@
     </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=Noto+Sans:wght@400;600;700&display=swap');
-        body {
-            font-family: 'Noto Sans', 'Cairo', sans-serif;
-        }
-        .active-tab {
-            background-color: rgba(245, 158, 11, 0.15);
-            border-color: rgba(245, 158, 11, 0.4);
-            color: #fbbf24 !important;
-        }
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #090d16;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #1e293b;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #334155;
-        }
+        body { font-family: 'Noto Sans', 'Cairo', sans-serif; }
+        .active-tab { background-color: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.4); color: #fbbf24 !important; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #090d16; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #334155; }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between overflow-x-hidden antialiased selection:bg-amber-500/30 selection:text-amber-300">
-
-    <!-- Top Navigation & Header -->
     <header class="bg-slate-900 border-b border-slate-800/80 px-6 py-3 flex items-center justify-between gap-4 shrink-0">
         <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-500 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-amber-500/20">
@@ -67,7 +43,6 @@
             </div>
         </div>
 
-        <!-- Mode Switcher Tabs -->
         <div class="flex items-center bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs font-medium overflow-x-auto max-w-full">
             <button id="tab-reader-btn" onclick="switchMainTab('reader')" class="active-tab flex items-center gap-1.5 px-3 py-2 rounded-lg border border-transparent transition-all whitespace-nowrap">
                 <i data-lucide="book-open" class="w-4 h-4"></i>
@@ -90,114 +65,86 @@
         <div class="hidden lg:flex items-center gap-3 text-xs">
             <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700/60 text-slate-300">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>Kan Mɔdɛli: <strong class="text-amber-400" id="current-voice-indicator">Zephyr (Bright)</strong></span>
+                <span>Kan Mɔdɛli: <strong class="text-amber-400" id="current-voice-indicator">Zephyr</strong></span>
             </div>
         </div>
     </header>
 
-    <!-- Main Workspace -->
     <div class="flex-1 flex overflow-hidden">
-        
-        <!-- Sidebar Controls & Gemini Voices -->
         <aside class="w-80 border-r border-slate-800 bg-slate-900/50 flex flex-col justify-between overflow-y-auto shrink-0 p-5 gap-6">
             <div class="space-y-6">
-                
-                <!-- API Key Config option for stability -->
                 <div class="space-y-1.5 bg-slate-950 p-3 rounded-xl border border-slate-800">
                     <label class="text-[11px] font-semibold uppercase tracking-wider text-slate-400 flex items-center justify-between">
                         <span class="flex items-center gap-1.5">
                             <i data-lucide="key" class="w-3.5 h-3.5 text-amber-400"></i>
                             Gemini API Key
                         </span>
-                        <span class="text-[10px] text-amber-400">Gansan/Sankan</span>
+                        <span class="text-[10px] text-amber-400">Li di e kɛ</span>
                     </label>
-                    <input type="password" id="user-api-key" placeholder="Donki yannin ka siri..." onchange="saveApiKey()" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-slate-200 focus:outline-none focus:border-amber-500/50">
+                    <input type="password" id="user-api-key" placeholder="Donki yannin ka siri..." onchange="saveApiKey()" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-slate-200 outline-none placeholder:text-slate-500">
                 </div>
 
-                <!-- Gemini Voice Selector -->
                 <div>
                     <label class="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center justify-between mb-2">
                         <span class="flex items-center gap-2">
                             <i data-lucide="mic" class="w-4 h-4 text-amber-400"></i>
                             Bamanankan Kanw (Voices)
                         </span>
-                        <span class="text-[10px] text-amber-400/80">30 Voices</span>
+                        <span class="text-[10px] text-amber-400/80">Browser voices</span>
                     </label>
-                    <select id="gemini-voice-select" onchange="updateVoiceIndicator()" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500/50">
+                    <select id="gemini-voice-select" onchange="updateVoiceIndicator()" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none">
                         <optgroup label="Popular Voices">
-                            <option value="Zephyr" selected>Zephyr (Bright & Clear Articulation)</option>
-                            <option value="Puck">Puck (Upbeat & Energetic)</option>
-                            <option value="Charon">Charon (Informative & Deep)</option>
-                            <option value="Kore">Kore (Firm & Authoritative)</option>
-                            <option value="Fenrir">Fenrir (Excitable & Expressive)</option>
-                            <option value="Aoede">Aoede (Breezy & Natural)</option>
+                            <option value="Zephyr" selected>Zephyr (Bright & Clear)</option>
+                            <option value="Puck">Puck (Energetic)</option>
+                            <option value="Charon">Charon (Deep)</option>
+                            <option value="Kore">Kore (Firm)</option>
+                            <option value="Fenrir">Fenrir (Expressive)</option>
+                            <option value="Aoede">Aoede (Natural)</option>
                         </optgroup>
-                        <optgroup label="Clear & Articulate Voices">
-                            <option value="Iapetus">Iapetus (Clear & Precise Articulation)</option>
-                            <option value="Leda">Leda (Youthful & Clear)</option>
-                            <option value="Orus">Orus (Firm & Direct)</option>
-                            <option value="Callirrhoe">Callirrhoe (Easy-going)</option>
-                            <option value="Autonoe">Autonoe (Bright)</option>
+                        <optgroup label="Clear Speakers">
+                            <option value="Iapetus">Iapetus</option>
+                            <option value="Leda">Leda</option>
+                            <option value="Orus">Orus</option>
+                            <option value="Callirrhoe">Callirrhoe</option>
+                            <option value="Autonoe">Autonoe</option>
                         </optgroup>
                     </select>
                 </div>
 
-                <!-- Acoustic Controls -->
-        <div class="space-y-4">
-            <label class="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2">
-                <i data-lucide="sliders" class="w-4 h-4 text-amber-400"></i>
-                Teliya ani Kan-samiyali (Speed & Pitch)
-            </label>
+                <div class="space-y-4">
+                    <label class="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+                        <i data-lucide="sliders" class="w-4 h-4 text-amber-400"></i>
+                        Teliya ani Kan-samiyali (Speed & Pitch)
+                    </label>
 
-            <div class="space-y-1.5">
-                <div class="flex justify-between text-xs">
-                    <span class="text-slate-300">Kuma Teliya (Speech Rate)</span>
-                    <span id="rate-val" class="text-amber-400 font-mono">0.85x</span>
-                </div>
-                <input type="range" id="rate-slider" min="0.5" max="1.3" value="0.85" step="0.02"
-                       oninput="document.getElementById('rate-val').innerText = this.value + 'x'"
-                       class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500">
-            </div>
-
-            <div class="space-y-1.5">
-                <div class="flex justify-between text-xs">
-                    <span class="text-slate-300">Kan Hakɛ (Pitch)</span>
-                    <span id="pitch-val" class="text-amber-400 font-mono">1.00</span>
-                </div>
-                <input type="range" id="pitch-slider" min="0.6" max="1.4" value="1.00" step="0.05"
-                       oninput="document.getElementById('pitch-val').innerText = this.value"
-                       class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500">
-            </div>
-
-            <!-- Visual Equalizer Status Bar -->
-            <div id="audio-equalizer-bar" class="hidden flex items-center justify-center gap-1 py-2 bg-slate-950 rounded-xl border border-slate-800/80">
-                <span class="w-1 h-3 bg-amber-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></span>
-                <span class="w-1 h-5 bg-amber-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
-                <span class="w-1 h-2 bg-orange-400 rounded-full animate-bounce" style="animation-delay: 0.3s"></span>
-                <span class="w-1 h-6 bg-amber-400 rounded-full animate-bounce" style="animation-delay: 0.15s"></span>
-                <span class="w-1 h-4 bg-orange-500 rounded-full animate-bounce" style="animation-delay: 0.25s"></span>
-                <span class="text-[10px] text-amber-400 font-mono ml-2">Kuma kan fɔtɔ...</span>
-            </div>
-        </div>
-                        <input type="range" id="rate-slider" min="0.5" max="1.3" value="0.85" step="0.02"
-                               oninput="document.getElementById('rate-val').innerText = this.value + 'x'"
-                               class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500">
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-slate-300">Kuma Teliya (Speech Rate)</span>
+                            <span id="rate-val" class="text-amber-400 font-mono">0.82x</span>
+                        </div>
+                        <input type="range" id="rate-slider" min="0.5" max="1.3" value="0.82" step="0.02" oninput="document.getElementById('rate-val').innerText = this.value + 'x'" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500">
                     </div>
 
                     <div class="space-y-1.5">
                         <div class="flex justify-between text-xs">
                             <span class="text-slate-300">Kan Hakɛ (Pitch)</span>
-                            <span id="pitch-val" class="text-amber-400 font-mono">1.00</span>
+                            <span id="pitch-val" class="text-amber-400 font-mono">1.10</span>
                         </div>
-                        <input type="range" id="pitch-slider" min="0.6" max="1.4" value="1.00" step="0.05"
-                               oninput="document.getElementById('pitch-val').innerText = this.value"
-                               class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500">
+                        <input type="range" id="pitch-slider" min="0.6" max="1.4" value="1.10" step="0.05" oninput="document.getElementById('pitch-val').innerText = this.value" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500">
+                    </div>
+
+                    <div id="audio-equalizer-bar" class="hidden flex items-center justify-center gap-1 py-2 bg-slate-950 rounded-xl border border-slate-800/80">
+                        <span class="w-1 h-3 bg-amber-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></span>
+                        <span class="w-1 h-5 bg-amber-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
+                        <span class="w-1 h-2 bg-orange-400 rounded-full animate-bounce" style="animation-delay: 0.3s"></span>
+                        <span class="w-1 h-6 bg-amber-400 rounded-full animate-bounce" style="animation-delay: 0.15s"></span>
+                        <span class="w-1 h-4 bg-orange-500 rounded-full animate-bounce" style="animation-delay: 0.25s"></span>
+                        <span class="text-[10px] text-amber-400 font-mono ml-2">Kuma kan fɔtɔ...</span>
                     </div>
                 </div>
 
                 <hr class="border-slate-800">
 
-                <!-- Bambara Phonetic Mapping Overview -->
                 <div class="space-y-2">
                     <label class="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2">
                         <i data-lucide="shield-check" class="w-4 h-4 text-amber-400"></i>
@@ -212,7 +159,7 @@
                         <div><span class="text-amber-400">2030:</span> bafila ani bisaba</div>
                         <div><span class="text-amber-400">4nan:</span> naaninan</div>
                         <div><span class="text-amber-400">4,8:</span> naani n'a kunkanfɛn seegin</div>
-                        <div><span class="text-amber-400">33%:</span> kɛmɛsaradala bisaba ni saba</div>
+                        <div><span class="text-amber-400">33%:</span> kɛmɛsarada la bisaba ni saba</div>
                     </div>
                 </div>
             </div>
@@ -222,34 +169,22 @@
             </div>
         </aside>
 
-        <!-- Dynamic Content Area -->
         <main class="flex-1 flex flex-col bg-slate-950 relative overflow-hidden">
-            
-            <!-- Quick Preset Audio Test Toolbar -->
             <div class="bg-slate-900/60 border-b border-slate-800/80 px-6 py-2.5 flex items-center justify-between gap-4 text-xs overflow-x-auto shrink-0">
                 <span class="text-slate-400 font-medium whitespace-nowrap flex items-center gap-1.5">
                     <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i> Bamanankan Jatew Korobo:
                 </span>
                 <div class="flex items-center gap-2">
-                    <button onclick="testPreset('100')" class="px-2.5 py-1 bg-slate-800 hover:bg-amber-500/20 hover:border-amber-500/40 border border-slate-700/80 rounded-lg text-slate-200 transition whitespace-nowrap">
-                        100 (kɛmɛ)
-                    </button>
-                    <button onclick="testPreset('2027')" class="px-2.5 py-1 bg-slate-800 hover:bg-amber-500/20 hover:border-amber-500/40 border border-slate-700/80 rounded-lg text-slate-200 transition whitespace-nowrap">
-                        2027 (bafila ani...)
-                    </button>
-                    <button onclick="testPreset('33%')" class="px-2.5 py-1 bg-slate-800 hover:bg-amber-500/20 hover:border-amber-500/40 border border-slate-700/80 rounded-lg text-slate-200 transition whitespace-nowrap">
-                        33% (kɛmɛsaradala...)
-                    </button>
-                    <button onclick="testPreset('4,8')" class="px-2.5 py-1 bg-slate-800 hover:bg-amber-500/20 hover:border-amber-500/40 border border-slate-700/80 rounded-lg text-slate-200 transition whitespace-nowrap">
-                        4,8 (naani n'a...)
-                    </button>
-                    <button onclick="testPreset('FULL')" class="px-2.5 py-1 bg-amber-500/20 border border-amber-500/40 text-amber-300 rounded-lg transition font-medium whitespace-nowrap flex items-center gap-1">
+                    <button onclick="testPreset('100')" class="px-2.5 py-1 bg-slate-800 hover:bg-amber-500/20 hover:border-amber-500/40 border border-slate-700/80 rounded-lg text-slate-200 transition whitespace-nowrap">100 (kɛmɛ)</button>
+                    <button onclick="testPreset('2027')" class="px-2.5 py-1 bg-slate-800 hover:bg-amber-500/20 hover:border-amber-500/40 border border-slate-700/80 rounded-lg text-slate-200 transition whitespace-nowrap">2027 (bafila...)</button>
+                    <button onclick="testPreset('33%')" class="px-2.5 py-1 bg-slate-800 hover:bg-amber-500/20 hover:border-amber-500/40 border border-slate-700/80 rounded-lg text-slate-200 transition whitespace-nowrap">33% (kɛmɛsarada...)</button>
+                    <button onclick="testPreset('4,8')" class="px-2.5 py-1 bg-slate-800 hover:bg-amber-500/20 hover:border-amber-500/40 border border-slate-700/80 rounded-lg text-slate-200 transition whitespace-nowrap">4,8 (naani...)</button>
+                    <button onclick="testPreset('FULL')" class="px-2.5 py-1 bg-amber-500/20 border border-amber-500/40 text-amber-300 rounded-lg transition font-medium whitespace-nowrap flex items-center gap-1.5">
                         <i data-lucide="play" class="w-3 h-3"></i> Bamanankan Kuma Bɛɛ Korobo
                     </button>
                 </div>
             </div>
 
-            <!-- TAB 1: LONG TEXT READER STUDIO -->
             <div id="tab-reader-view" class="flex-1 flex flex-col p-6 overflow-y-auto space-y-6">
                 <div class="max-w-4xl w-full mx-auto space-y-4">
                     <div class="flex items-center justify-between">
@@ -267,23 +202,20 @@
 
                     <div class="space-y-2">
                         <label class="text-xs font-semibold text-slate-300">Bamanankan Sɛbɛnni Donso (Input Text)</label>
-                        <textarea id="reader-input-text" rows="8" 
-                            placeholder="Sɛbɛnni don yan... Misali: 100: kɛmɛ. G7: Ji wolonwula. 7: wolonwula. 2027: bafila ani mugan ni wolonwula. cogo. cogoya. 2026: bafila ani mugan ni wɔɔrɔ. 4nan: naaninan. 4,8: naani n'a kunkanfɛn seegin. 2029: bafila ani mugan ni kɔnɔntɔn. 2030: bafila ani bisaba. 33% kɛmɛsaradala bisaba ni saba..."
-                            class="w-full bg-slate-900 border border-slate-800 focus:border-amber-500/60 rounded-2xl p-4 text-xs text-white placeholder-slate-500 focus:outline-none transition shadow-inner resize-y font-sans leading-relaxed"></textarea>
+                        <textarea id="reader-input-text" rows="8" placeholder="Sɛbɛnni don yan... Misali: 100: kɛmɛ. G7: Ji wolonwula. 7: wolonwula. 2027: bafila ani mugan ni wolonwula. cogo. cogoya. 2026: bafila ani mugan ni wɔɔrɔ. 4nan: naaninan. 4,8: naani n'a kunkanfɛn seegin. 2029: bafila ani mugan ni kɔnɔntɔn. 2030: bafila ani bisaba. 33% kɛmɛsarada la bisaba ni saba." class="w-full bg-slate-900 border border-slate-800 focus:border-amber-500/60 rounded-2xl p-4 text-xs text-white placeholder-slate-500 focus:outline-none transition shadow-inner"></textarea>
                     </div>
 
-                    <!-- Actions Bar -->
                     <div class="flex flex-wrap items-center justify-between gap-3 bg-slate-900/80 p-4 rounded-2xl border border-slate-800">
                         <div class="flex items-center gap-3">
-                            <button onclick="processAndReadDocument()" class="flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition shadow-lg shadow-amber-500/10 text-xs cursor-pointer">
+                            <button onclick="processAndReadDocument()" class="flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition shadow-md">
                                 <i data-lucide="volume-2" class="w-4 h-4 stroke-[2.5]"></i>
                                 <span>Bamanankan Kalan (Read in Bambara)</span>
                             </button>
-                            <button onclick="stopAudioPlayback()" class="flex items-center gap-2 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-xl border border-slate-700 transition cursor-pointer">
+                            <button onclick="stopAudioPlayback()" class="flex items-center gap-2 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-xl border border-slate-700 transition">
                                 <i data-lucide="square" class="w-4 h-4"></i>
                                 <span>Dabila (Stop)</span>
                             </button>
-                            <button onclick="downloadCurrentAudio()" id="reader-download-btn" disabled class="flex items-center gap-2 px-4 py-2.5 bg-slate-800 text-slate-400 border border-slate-700 rounded-xl transition text-xs cursor-not-allowed">
+                            <button onclick="downloadCurrentAudio()" id="reader-download-btn" disabled class="flex items-center gap-2 px-4 py-2.5 bg-slate-800 text-slate-400 border border-slate-700 rounded-xl text-xs cursor-not-allowed">
                                 <i data-lucide="download" class="w-4 h-4"></i>
                                 <span>Kan Ladiyabi (Download)</span>
                             </button>
@@ -294,7 +226,6 @@
                         </div>
                     </div>
 
-                    <!-- Phonetically Normalized Output Preview -->
                     <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-semibold text-amber-400 flex items-center gap-1.5">
@@ -304,29 +235,24 @@
                                 <i data-lucide="copy" class="w-3 h-3"></i> Kopi
                             </button>
                         </div>
-                        <div id="reader-normalized-preview" class="text-xs text-slate-200 leading-relaxed font-sans bg-slate-950 p-3 rounded-xl border border-slate-800 min-h-[80px] max-h-60 overflow-y-auto whitespace-pre-wrap">
-                            Sɛbɛnni labɛnnen bɛna bɔ yan...
-                        </div>
+                        <div id="reader-normalized-preview" class="text-xs text-slate-200 leading-relaxed font-sans bg-slate-950 p-3 rounded-xl border border-slate-800 min-h-[80px] max-h-60 overflow-y-auto">Sɛbɛnni labɛnnen bɛna bɔ yan...</div>
                     </div>
                 </div>
             </div>
 
-            <!-- TAB 2: INTERACTIVE CHAT STUDIO -->
             <div id="tab-chat-view" class="hidden flex-1 flex flex-col justify-between overflow-hidden relative">
-                <!-- Chat Messages Scroll Container -->
                 <div id="chat-messages" class="flex-1 overflow-y-auto p-6 space-y-4">
                     <div class="flex gap-4 max-w-3xl mx-auto">
                         <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-500 to-orange-600 flex items-center justify-center text-slate-950 font-bold shrink-0 shadow-md">
                             <i data-lucide="bot" class="w-4 h-4"></i>
                         </div>
                         <div class="flex-1 bg-slate-900 border border-slate-800/80 rounded-2xl p-4 text-xs leading-relaxed text-slate-200 shadow-sm space-y-2">
-                            <p class="font-semibold text-amber-400 text-sm">Bamanankan AI Baro (Interactive Bambara AI)</p>
+                            <p class="font-semibold text-amber-400 text-sm">Bamanankan AI Baro</p>
                             <p>I ni ce! Aw ni baraji. Nyiningali o nyiningali kɛ Bamanankan kɔnɔ, n bɛna i jaabi ka jatew fɔ Bamanankan kan tiɲɛ la.</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Chat Input Form -->
                 <div class="p-4 border-t border-slate-800 bg-slate-900/40 backdrop-blur shrink-0">
                     <div class="max-w-3xl mx-auto space-y-2">
                         <div id="mic-status-banner" class="hidden text-xs text-amber-400 flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 px-3 py-1.5 rounded-xl">
@@ -335,20 +261,12 @@
                         </div>
                         <form id="chat-form" onsubmit="handleChatSend(event)" class="relative flex flex-col gap-2">
                             <div class="relative">
-                                <textarea id="chat-user-input" rows="3"
-                                    placeholder="I ka nyiningali sɛbɛn Bamanankan kɔnɔ... Misali: I ni sogoma, i ka kɛnɛ wa?" 
-                                    class="w-full bg-slate-900 border border-slate-800 focus:border-amber-500/60 rounded-2xl py-3 pl-4 pr-28 text-xs text-white placeholder-slate-500 focus:outline-none transition shadow-inner resize-none"></textarea>
-                                
+                                <textarea id="chat-user-input" rows="3" placeholder="I ka nyiningali sɛbɛn Bamanankan kɔnɔ... Misali: I ni sogoma, i ka kɛnɛ wa?" class="w-full bg-slate-900 border border-slate-800 focus:border-amber-500/60 rounded-2xl py-3 pl-4 pr-28 text-xs text-white placeholder-slate-500 focus:outline-none"></textarea>
                                 <div class="absolute right-3 bottom-3 flex items-center gap-2">
-                                    <button type="button" onclick="toggleChatMic()" id="chat-mic-btn" 
-                                        title="Record Speech in Bambara"
-                                        class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition border border-slate-700 flex items-center gap-1 cursor-pointer">
+                                    <button type="button" onclick="toggleChatMic()" id="chat-mic-btn" title="Record Speech in Bambara" class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition border border-slate-700 flex items-center gap-1 cursor-pointer">
                                         <i data-lucide="mic" class="w-4 h-4 text-amber-400"></i>
                                     </button>
-
-                                    <button type="submit" id="chat-send-btn" 
-                                        title="Ci ani Jaabi"
-                                        class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold transition shadow-md text-xs cursor-pointer">
+                                    <button type="submit" id="chat-send-btn" title="Ci ani Jaabi" class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold transition shadow-md text-xs cursor-pointer">
                                         <span>Ci (Send)</span>
                                         <i data-lucide="send" class="w-3.5 h-3.5 stroke-[2.5]"></i>
                                     </button>
@@ -359,7 +277,6 @@
                 </div>
             </div>
 
-            <!-- TAB 3: LIVE CAMERA READER & VISION STUDIO -->
             <div id="tab-camera-view" class="hidden flex-1 flex flex-col p-6 overflow-y-auto space-y-6">
                 <div class="max-w-4xl w-full mx-auto space-y-4">
                     <div class="flex items-center justify-between">
@@ -373,7 +290,6 @@
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Camera Viewport Card -->
                         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col gap-3">
                             <div class="relative bg-slate-950 rounded-xl overflow-hidden aspect-video border border-slate-800 flex items-center justify-center">
                                 <video id="camera-feed" class="w-full h-full object-cover hidden" autoplay playsinline></video>
@@ -385,21 +301,20 @@
                             </div>
 
                             <div class="flex flex-wrap items-center justify-between gap-2">
-                                <button id="start-cam-btn" onclick="startCamera()" class="flex-1 py-2 px-3 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 border border-slate-700 cursor-pointer">
+                                <button id="start-cam-btn" onclick="startCamera()" class="flex-1 py-2 px-3 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold flex items-center justify-center gap-2">
                                     <i data-lucide="video" class="w-4 h-4 text-emerald-400"></i> Kamera Wuli
                                 </button>
-                                <button id="capture-cam-btn" onclick="captureAndAnalyzeCamera()" disabled class="flex-1 py-2 px-3 bg-amber-500 hover:bg-amber-400 disabled:bg-slate-800 disabled:text-slate-600 text-slate-950 font-bold rounded-xl text-xs flex items-center justify-center gap-2 shadow cursor-pointer">
+                                <button id="capture-cam-btn" onclick="captureAndAnalyzeCamera()" disabled class="flex-1 py-2 px-3 bg-amber-500 hover:bg-amber-400 disabled:bg-slate-800 disabled:text-slate-500 disabled:cursor-not-allowed text-slate-950 rounded-xl text-xs font-semibold flex items-center justify-center gap-2">
                                     <i data-lucide="aperture" class="w-4 h-4"></i> Ja Ta & Kalan
                                 </button>
                             </div>
 
                             <div class="border-t border-slate-800 pt-3">
                                 <label class="text-xs font-semibold text-slate-400 mb-1 block">Walima ja don yan (Upload image):</label>
-                                <input type="file" id="camera-file-input" accept="image/*" onchange="handleFileUpload(event)" class="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-amber-400 hover:file:bg-slate-700 cursor-pointer">
+                                <input type="file" id="camera-file-input" accept="image/*" onchange="handleFileUpload(event)" class="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-slate-800 file:text-slate-200">
                             </div>
                         </div>
 
-                        <!-- Camera Analysis Results Card -->
                         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between space-y-4">
                             <div class="space-y-3">
                                 <div class="flex items-center justify-between">
@@ -408,13 +323,11 @@
                                     </span>
                                     <span id="cam-status" class="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-400">Ja makɔnɔni</span>
                                 </div>
-                                <div id="cam-extracted-text" class="bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 min-h-[140px] max-h-48 overflow-y-auto leading-relaxed">
-                                    Ja kɔnɔ sɛbɛnni bɛna bɔ yan ka kalan Bamanankan kɔnɔ...
-                                </div>
+                                <div id="cam-extracted-text" class="bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 min-h-[140px] max-h-48 overflow-y-auto leading-relaxed">Ja kɔnɔ sɛbɛnni bɛna bɔ yan ka kalan Bamanankan kɔnɔ...</div>
                             </div>
 
                             <div class="space-y-2">
-                                <button id="cam-play-btn" onclick="playExtractedCamText()" disabled class="w-full py-2.5 bg-slate-800 text-slate-500 font-bold rounded-xl text-xs flex items-center justify-center gap-2 border border-slate-700 cursor-not-allowed">
+                                <button id="cam-play-btn" onclick="playExtractedCamText()" disabled class="w-full py-2.5 bg-slate-800 text-slate-500 font-bold rounded-xl text-xs flex items-center justify-center gap-2 cursor-not-allowed">
                                     <i data-lucide="volume-2" class="w-4 h-4"></i> Bamanankan Kuma Lamɛn
                                 </button>
                             </div>
@@ -423,7 +336,6 @@
                 </div>
             </div>
 
-            <!-- TAB 4: MEDIA CREATOR (IMAGE & VIDEO GENERATOR) -->
             <div id="tab-media-view" class="hidden flex-1 flex flex-col p-6 overflow-y-auto space-y-6">
                 <div class="max-w-4xl w-full mx-auto space-y-6">
                     <div>
@@ -434,18 +346,15 @@
                         <p class="text-xs text-slate-400">Ja ani widewo kalansenw dilan Bamanankan ani a jatew kama.</p>
                     </div>
 
-                    <!-- Media Tabs (Images vs Video) -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Image Generator Box -->
                         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 flex flex-col justify-between">
                             <div class="space-y-3">
                                 <div class="flex items-center gap-2 text-xs font-bold text-amber-400">
                                     <i data-lucide="image" class="w-4 h-4"></i> Ja Dilanlan (Image Generator)
                                 </div>
                                 <p class="text-[11px] text-slate-400 leading-normal">Ja min b'i fɛ, o kɔfɔ Bamanankan walima Mali laada la:</p>
-                                <textarea id="image-prompt-input" rows="3" placeholder="Bamanankan kalansen ja: jatew 100 kɛmɛ, 2027 bafila ani mugan ni wolonwula..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-amber-500/60 resize-none"></textarea>
-                                
-                                <button onclick="generateAIImage()" id="gen-img-btn" class="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition text-xs flex items-center justify-center gap-2 shadow cursor-pointer">
+                                <textarea id="image-prompt-input" rows="3" placeholder="Bamanankan kalansen ja: jatew 100 kɛmɛ, 2027 bafila ani mugan ni wolonwula..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none"></textarea>
+                                <button onclick="generateAIImage()" id="gen-img-btn" class="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition text-xs flex items-center justify-center gap-2">
                                     <i data-lucide="wand-2" class="w-4 h-4"></i> Ja Dilan (Generate Image)
                                 </button>
                             </div>
@@ -455,16 +364,14 @@
                             </div>
                         </div>
 
-                        <!-- Video Generator Box -->
                         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 flex flex-col justify-between">
                             <div class="space-y-3">
                                 <div class="flex items-center gap-2 text-xs font-bold text-amber-400">
                                     <i data-lucide="video" class="w-4 h-4"></i> Widewo Dilanlan (Video Generator)
                                 </div>
                                 <p class="text-[11px] text-slate-400 leading-normal">Bamanankan kalan widewo labɛn ani a kan tiɲɛ la:</p>
-                                <input type="text" id="video-prompt-input" placeholder="Tɔgɔ: Bamanankan jatew kalansen (2026, 2027, 2030)..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-amber-500/60">
-                                
-                                <button onclick="generateAIVideo()" id="gen-vid-btn" class="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition text-xs flex items-center justify-center gap-2 shadow cursor-pointer">
+                                <input type="text" id="video-prompt-input" placeholder="Tɔgɔ: Bamanankan jatew kalansen (2026, 2027, 2030)..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none">
+                                <button onclick="generateAIVideo()" id="gen-vid-btn" class="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition text-xs flex items-center justify-center gap-2">
                                     <i data-lucide="clapperboard" class="w-4 h-4"></i> Widewo Labɛn (Generate Video)
                                 </button>
                             </div>
@@ -476,95 +383,269 @@
                     </div>
                 </div>
             </div>
-
         </main>
     </div>
 
-    <!-- Application Script Logic -->
     <script>
-        // Native High-Precision Web Audio Synthesizer Engine with Audio Equalizer feedback
-        function generateLocalBambaraSpeech(text, statusCallback) {
-            try {
-                if (!('speechSynthesis' in window)) {
-                    if (statusCallback) statusCallback("Kuma lamɛnni te se ka kɛ am'i ka fɛɛrɛ la.");
+        const STORAGE_KEYS = { apiKey: 'bambara_gemini_api_key', selectedVoice: 'bambara_voice' };
+        let conversationHistory = [];
+        let videoStream = null;
+        let isRecording = false;
+        let speechRecognitionInstance = null;
+
+        function escapeHtml(value = '') {
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function getApiKey() {
+            const key = localStorage.getItem(STORAGE_KEYS.apiKey) || '';
+            const input = document.getElementById('user-api-key');
+            if (input && !key && input.value) return input.value.trim();
+            return key.trim();
+        }
+
+        function saveApiKey() {
+            const input = document.getElementById('user-api-key');
+            const value = input ? input.value.trim() : '';
+            if (value) localStorage.setItem(STORAGE_KEYS.apiKey, value);
+            else localStorage.removeItem(STORAGE_KEYS.apiKey);
+        }
+
+        function updateVoiceIndicator() {
+            const select = document.getElementById('gemini-voice-select');
+            const label = document.getElementById('current-voice-indicator');
+            const value = select ? select.value : 'Zephyr';
+            const display = value || 'Zephyr';
+            if (label) label.textContent = display;
+            localStorage.setItem(STORAGE_KEYS.selectedVoice, display);
+        }
+
+        function restoreVoiceSelection() {
+            const select = document.getElementById('gemini-voice-select');
+            if (!select) return;
+            const saved = localStorage.getItem(STORAGE_KEYS.selectedVoice) || 'Zephyr';
+            const option = Array.from(select.options).find(opt => opt.value === saved);
+            if (option) select.value = saved;
+            updateVoiceIndicator();
+        }
+
+        function switchMainTab(tabName) {
+            const tabs = ['reader', 'chat', 'camera', 'media'];
+            tabs.forEach(name => {
+                const view = document.getElementById(`tab-${name}-view`);
+                const button = document.getElementById(`tab-${name}-btn`);
+                if (view) view.classList.toggle('hidden', name !== tabName);
+                if (button) button.classList.toggle('active-tab', name === tabName);
+                if (button) {
+                    button.classList.toggle('text-slate-400', name !== tabName);
+                    button.classList.toggle('hover:text-slate-200', name !== tabName);
+                    button.classList.toggle('text-slate-200', name === tabName);
+                }
+            });
+
+            const readerBtn = document.getElementById('tab-reader-btn');
+            const chatBtn = document.getElementById('tab-chat-btn');
+            const cameraBtn = document.getElementById('tab-camera-btn');
+            const mediaBtn = document.getElementById('tab-media-btn');
+            [readerBtn, chatBtn, cameraBtn, mediaBtn].forEach(btn => {
+                if (!btn) return;
+                btn.classList.remove('active-tab');
+                btn.classList.remove('text-slate-200');
+                btn.classList.add('text-slate-400');
+                btn.classList.add('hover:text-slate-200');
+            });
+
+            const activeButton = document.getElementById(`tab-${tabName}-btn`);
+            if (activeButton) {
+                activeButton.classList.add('active-tab');
+                activeButton.classList.remove('text-slate-400');
+                activeButton.classList.add('text-slate-200');
+            }
+        }
+
+        function normalizeBambaraPhoneticText(text) {
+            if (!text || typeof text !== 'string') return '';
+            let out = text.trim();
+
+            out = out.replace(/\b0\b/g, 'zero');
+            out = out.replace(/\b(\d+),(\d+)\b/g, '$1 $2');
+
+            const numberWords = {
+                '0': 'zero', '1': 'kelen', '2': 'fila', '3': 'saba', '4': 'naani', '5': 'duuru', '6': 'woro', '7': 'wolonwula', '8': 'seegin', '9': 'kɔnɔntɔn',
+                '10': 'mugan', '11': 'mugan ni kelen', '12': 'mugan ni fila', '13': 'mugan ni saba', '14': 'mugan ni naani', '15': 'mugan ni duuru', '16': 'mugan ni woro', '17': 'mugan ni wolonwula', '18': 'mugan ni seegin', '19': 'mugan ni kɔnɔntɔn',
+                '20': 'mugan fila', '30': 'mugan saba', '40': 'mugan naani', '50': 'mugan duuru', '60': 'mugan woro', '70': 'mugan wolonwula', '80': 'mugan seegin', '90': 'mugan kɔnɔntɔn',
+                '100': 'kɛmɛ', '200': 'bafila', '300': 'bafila ani kɛmɛ', '1000': 'kelen kɛmɛ', '10000': 'muganan',
+            };
+
+            const toBambaraNumber = (n) => {
+                if (numberWords[String(n)]) return numberWords[String(n)];
+                if (n >= 1000) {
+                    const thousands = Math.floor(n / 1000);
+                    const rest = n % 1000;
+                    const base = toBambaraNumber(thousands) + ' kɛmɛ';
+                    return rest ? base + ' ani ' + toBambaraNumber(rest) : base;
+                }
+                if (n >= 100) {
+                    const hundreds = Math.floor(n / 100);
+                    const rest = n % 100;
+                    if (hundreds === 1) {
+                        return rest ? 'kɛmɛ ani ' + toBambaraNumber(rest) : 'kɛmɛ';
+                    }
+                    return `${toBambaraNumber(hundreds)} kɛmɛ` + (rest ? ' ani ' + toBambaraNumber(rest) : '');
+                }
+                if (n >= 20) {
+                    const tens = Math.floor(n / 10) * 10;
+                    const rest = n % 10;
+                    return `${toBambaraNumber(tens)}` + (rest ? ' ni ' + toBambaraNumber(rest) : '');
+                }
+                return String(n);
+            };
+
+            out = out.replace(/\b(\d{1,4})(?:\s*%|%\b)/g, (_, d) => `${toBambaraNumber(Number(d))} kɛmɛsarada`);
+            out = out.replace(/\b(\d{1,4})\b/g, (m, d) => {
+                if (Number(d) >= 0 && Number(d) <= 9999) return toBambaraNumber(Number(d));
+                return m;
+            });
+
+            out = out.replace(/\bG7\b/gi, 'Ji wolonwula');
+            out = out.replace(/\bG\s*7\b/gi, 'Ji wolonwula');
+            out = out.replace(/\b4nan\b/gi, 'naaninan');
+            out = out.replace(/\b4,8\b/gi, 'naani n\'a kunkanfɛn seegin');
+            out = out.replace(/\b33%\b/gi, 'kɛmɛsarada la bisaba ni saba');
+            out = out.replace(/\b100\b/gi, 'kɛmɛ');
+            out = out.replace(/\b\d+\s*:\s*/g, '');
+            out = out.replace(/\s+/g, ' ').trim();
+
+            return out.replace(/\s*([.,;:!?])\s*/g, '$1 ')
+                .replace(/\s+([.])/g, '$1')
+                .replace(/\s+([,])/g, '$1')
+                .replace(/\s*\n\s*/g, '. ')
+                .trim();
+        }
+
+        function chunkNaturalText(text, maxChars = 220) {
+            const raw = (text || '').replace(/\s+/g, ' ').trim();
+            if (!raw) return [];
+            const parts = raw.split(/(?<=[.!?])\s+/);
+            const result = [];
+            let buffer = '';
+            for (const part of parts) {
+                const candidate = buffer ? buffer + ' ' + part : part;
+                if (candidate.length <= maxChars) {
+                    buffer = candidate;
+                } else {
+                    if (buffer) result.push(buffer);
+                    buffer = part;
+                }
+            }
+            if (buffer) result.push(buffer);
+            return result.filter(Boolean);
+        }
+
+        function getPreferredVoice() {
+            const voices = window.speechSynthesis.getVoices();
+            const selected = document.getElementById('gemini-voice-select')?.value || 'Zephyr';
+            const keywords = {
+                Zephyr: ['Google UK English Female', 'Google US English', 'Samantha', 'Zira', 'Microsoft Aria', 'Ava', 'Google Français', 'Français'],
+                Puck: ['Google UK English Male', 'Google US English', 'Daniel', 'David', 'Thomas', 'Google Français'],
+                Charon: ['Google Français', 'Microsoft Paul', 'Microsoft Mark', 'Google US English'],
+                Kore: ['Google UK English Male', 'Microsoft David', 'Google US English', 'Paul'],
+                Fenrir: ['Google Français', 'Google US English', 'Microsoft Aria', 'Ava', 'Samantha'],
+                Aoede: ['Google UK English Female', 'Samantha', 'Ava', 'Français'],
+                Iapetus: ['Google Français', 'Google UK English Female', 'Ava', 'Samantha'],
+                Leda: ['Google US English', 'Samantha', 'Ava', 'Google Français'],
+                Orus: ['Google Français', 'Microsoft David', 'Google US English', 'Paul'],
+                Callirrhoe: ['Google Français', 'Ava', 'Samantha', 'Microsoft Zira'],
+                Autonoe: ['Google UK English Female', 'Ava', 'Samantha', 'Google Français']
+            };
+
+            const matchList = keywords[selected] || keywords.Zephyr || [];
+            const preferred = voices.find(voice => matchList.some(keyword => voice.name.toLowerCase().includes(keyword.toLowerCase()) || keyword.toLowerCase().includes(voice.name.toLowerCase())));
+            if (preferred) return preferred;
+            return voices.find(v => /fr|en|es|it|ar/i.test(v.lang)) || voices[0] || null;
+        }
+
+        function playBambaraAudio(text, statusCallback) {
+            const cleanText = normalizeBambaraPhoneticText(text || '');
+            if (!cleanText) {
+                if (statusCallback) statusCallback('Kuma fɔli te se ka kɛ.');
+                return;
+            }
+
+            if (!('speechSynthesis' in window)) {
+                if (statusCallback) statusCallback('Kuma lamɛnni te se ka kɛ am’i ka fɛɛrɛ la.');
+                return;
+            }
+
+            const synth = window.speechSynthesis;
+            synth.cancel();
+
+            const sentences = chunkNaturalText(cleanText, 220);
+            let currentIndex = 0;
+            const eqBar = document.getElementById('audio-equalizer-bar');
+            const rateSlider = document.getElementById('rate-slider');
+            const pitchSlider = document.getElementById('pitch-slider');
+
+            function speakNext() {
+                if (currentIndex >= sentences.length) {
+                    if (eqBar) eqBar.classList.add('hidden');
+                    if (statusCallback) statusCallback('Kuma fɔli dafa la ka ɲɛ.');
                     return;
                 }
-                window.speechSynthesis.cancel();
-                
-                // Chunk long text into smaller natural sentence chunks for clear audio playback
-                const sentences = text.match(/[^.!?]+[.!?]?/g) || [text];
-                let currentIndex = 0;
 
-                const eqBar = document.getElementById('audio-equalizer-bar');
-
-                function speakNextSentence() {
-                    if (currentIndex >= sentences.length) {
-                        if (eqBar) eqBar.classList.add('hidden');
-                        if (statusCallback) statusCallback("Kuma fɔli dafa la ka ɲɛ.");
-                        return;
-                    }
-
-                    const sentenceText = sentences[currentIndex].trim();
-                    if (!sentenceText) {
-                        currentIndex++;
-                        speakNextSentence();
-                        return;
-                    }
-
-                    const utterance = new SpeechSynthesisUtterance(sentenceText);
-                    const rateSlider = document.getElementById('rate-slider');
-                    const pitchSlider = document.getElementById('pitch-slider');
-                    
-                    utterance.rate = rateSlider ? parseFloat(rateSlider.value) : 0.85;
-                    utterance.pitch = pitchSlider ? parseFloat(pitchSlider.value) : 1.0;
-                    utterance.lang = 'fr-FR'; 
-
-                    utterance.onstart = () => {
-                        if (eqBar) eqBar.classList.remove('hidden');
-                        if (statusCallback) statusCallback(`Kuma fɔli bɛ kɛ (${currentIndex + 1}/${sentences.length})...`);
-                    };
-
-                    utterance.onend = () => {
-                        currentIndex++;
-                        speakNextSentence();
-                    };
-
-                    utterance.onerror = (e) => {
-                        console.warn("Speech utterance notice:", e);
-                        currentIndex++;
-                        speakNextSentence();
-                    };
-
-                    window.speechSynthesis.speak(utterance);
+                const sentence = sentences[currentIndex].trim();
+                if (!sentence) {
+                    currentIndex += 1;
+                    speakNext();
+                    return;
                 }
 
-                speakNextSentence();
-            } catch (e) {
-                console.error("Local synth error:", e);
-                if (statusCallback) statusCallback("Kuma fɔli fili.");
+                const utterance = new SpeechSynthesisUtterance(sentence);
+                const selectedVoice = getPreferredVoice();
+                if (selectedVoice) utterance.voice = selectedVoice;
+                utterance.lang = 'fr-FR';
+                utterance.rate = rateSlider ? parseFloat(rateSlider.value) : 0.82;
+                utterance.pitch = pitchSlider ? parseFloat(pitchSlider.value) : 1.10;
+                utterance.volume = 1.0;
+
+                utterance.onstart = () => {
+                    if (eqBar) eqBar.classList.remove('hidden');
+                    if (statusCallback) statusCallback(`Kuma fɔli bɛ kɛ (${currentIndex + 1}/${sentences.length})...`);
+                };
+
+                utterance.onend = () => {
+                    currentIndex += 1;
+                    speakNext();
+                };
+
+                utterance.onerror = () => {
+                    currentIndex += 1;
+                    speakNext();
+                };
+
+                synth.speak(utterance);
             }
+
+            speakNext();
         }
 
         function stopAudioPlayback() {
             try {
-                if ('speechSynthesis' in window) {
-                    window.speechSynthesis.cancel();
-                }
-                if (currentActiveAudio) {
-                    currentActiveAudio.pause();
-                    currentActiveAudio = null;
-                }
+                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
             } catch (e) {
-                console.warn("Error stopping audio:", e);
+                console.warn('stopAudioPlayback error:', e);
             }
             const eqBar = document.getElementById('audio-equalizer-bar');
             if (eqBar) eqBar.classList.add('hidden');
-
             const statusEl = document.getElementById('reader-status');
-            if (statusEl) statusEl.innerText = "Dabilatɔ";
+            if (statusEl) statusEl.textContent = 'Dabilatɔ';
         }
 
-        // Reader Studio Processing Handler
         function processAndReadDocument() {
             const inputEl = document.getElementById('reader-input-text');
             if (!inputEl) return;
@@ -573,11 +654,11 @@
 
             const normalized = normalizeBambaraPhoneticText(rawText);
             const previewEl = document.getElementById('reader-normalized-preview');
-            if (previewEl) previewEl.innerText = normalized;
+            if (previewEl) previewEl.textContent = normalized;
 
             const statusEl = document.getElementById('reader-status');
-            playBambaraAudio(rawText, (msg) => {
-                if (statusEl) statusEl.innerText = msg;
+            playBambaraAudio(normalized, (msg) => {
+                if (statusEl) statusEl.textContent = msg;
             });
         }
 
@@ -585,88 +666,97 @@
             const inputEl = document.getElementById('reader-input-text');
             if (inputEl) inputEl.value = '';
             const previewEl = document.getElementById('reader-normalized-preview');
-            if (previewEl) previewEl.innerText = 'Sɛbɛnni labɛnnen bɛna bɔ yan...';
+            if (previewEl) previewEl.textContent = 'Sɛbɛnni labɛnnen bɛna bɔ yan...';
             stopAudioPlayback();
-            enableDownloadBtn(false);
+            const btn = document.getElementById('reader-download-btn');
+            if (btn) {
+                btn.disabled = true;
+                btn.classList.add('cursor-not-allowed');
+                btn.classList.remove('text-white');
+            }
         }
 
         function copyNormalizedText() {
             const previewEl = document.getElementById('reader-normalized-preview');
             if (!previewEl) return;
-            const text = previewEl.innerText;
-            if (text && navigator.clipboard) {
+            const text = previewEl.textContent.trim();
+            if (!text) return;
+            navigator.clipboard?.writeText(text).catch(() => {
+                const helper = document.createElement('textarea');
+                helper.value = text;
+                document.body.appendChild(helper);
+                helper.select();
                 document.execCommand('copy');
-            }
+                helper.remove();
+            });
         }
 
-        // Gemini Text Generation API (Gemini Chat Integration with Hybrid Local Fallback)
+        function localBambaraReply(userPrompt) {
+            const clean = normalizeBambaraPhoneticText(userPrompt);
+            const greeting = 'I ni ce! Aw ni baraji. Bamanankan kuma bɛna ka kɛ cogo la.';
+            return `${greeting} Aw ka sɛbɛn: ${clean}. A bɛna kalanna ka ta ɲɛ fɛdɛ, kɛmɛ, ba fila, wolonwula, ani jatew cogo la.`;
+        }
+
         async function fetchGeminiAIResponse(userPrompt) {
             const apiKey = getApiKey();
             const normalizedPrompt = normalizeBambaraPhoneticText(userPrompt);
 
             if (!apiKey) {
-                return `I ni sogoma! Aw ni baraji. Bamanankan jaabi: ${normalizedPrompt}. I ka jatew labɛnnen ye Bamanankan kɔnɔ.`;
+                return localBambaraReply(userPrompt);
             }
 
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
-
-            const systemInstruction = `You are a native Bambara (Bamanankan) expert language assistant.
-            STRICT RULES FOR NUMBERS & LANGUAGE:
-            1. Respond ONLY in authentic Bambara language (Bamanankan). Do not use Arabic or French unless specifically explaining vocabulary.
-            2. You MUST spell out ALL numbers using exclusively native Bambara number words (e.g., 100 -> kɛmɛ, 2027 -> bafila ani mugan ni wolonwula). NEVER write raw digits.`;
-
-            conversationHistory.push({ role: "user", parts: [{ text: userPrompt }] });
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${encodeURIComponent(apiKey)}`;
+            const systemInstruction = `You are a native Bambara expert. Respond only in Bambara, with authentic pronunciation logic. Spell out all numbers in Bambara: 100 -> kɛmɛ, 2027 -> bafila ani mugan ni wolonwula. Use native Bambara words, not Arabic numerals. Keep every answer natural and clear.`;
 
             try {
                 const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        contents: conversationHistory,
+                        contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
                         systemInstruction: { parts: [{ text: systemInstruction }] }
                     })
                 });
 
-                if (!response.ok) throw new Error("Cloud status " + response.status);
-
+                if (!response.ok) throw new Error('Cloud status ' + response.status);
                 const result = await response.json();
                 const replyText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
-                
-                if (replyText) {
-                    conversationHistory.push({ role: "model", parts: [{ text: replyText }] });
+                if (replyText && replyText.trim()) {
+                    conversationHistory.push({ role: 'user', parts: [{ text: userPrompt }] });
+                    conversationHistory.push({ role: 'model', parts: [{ text: replyText }] });
                     return replyText;
                 }
             } catch (err) {
-                console.warn("Falling back to smart local response engine:", err);
+                console.warn('Gemini unavailable, using local fallback:', err);
             }
 
-            return `I ni ce! Aw bɛ se ka kuma: ${normalizedPrompt}`;
+            return localBambaraReply(normalizedPrompt || userPrompt);
         }
 
-        // Copy Chat Message Text function
         function copyChatMessageText(text, btnElement) {
             if (!btnElement) return;
             try {
-                const tempTextArea = document.createElement("textarea");
-                tempTextArea.value = text;
-                document.body.appendChild(tempTextArea);
-                tempTextArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(tempTextArea);
+                navigator.clipboard?.writeText(text).catch(() => {
+                    const tempTextArea = document.createElement('textarea');
+                    tempTextArea.value = text;
+                    document.body.appendChild(tempTextArea);
+                    tempTextArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(tempTextArea);
+                });
 
-                const originalText = btnElement.innerHTML;
-                btnElement.innerHTML = `<i data-lucide="check" class="w-4 h-4 text-emerald-400"></i><span class="text-emerald-400">Kopi kɛra!</span>`;
+                const original = btnElement.innerHTML;
+                btnElement.innerHTML = '<i data-lucide="check" class="w-4 h-4 text-emerald-400"></i><span class="text-emerald-400">Kopi kɛra!</span>';
                 if (window.lucide && typeof window.lucide.createIcons === 'function') lucide.createIcons();
                 setTimeout(() => {
-                    btnElement.innerHTML = originalText;
+                    btnElement.innerHTML = original;
                     if (window.lucide && typeof window.lucide.createIcons === 'function') lucide.createIcons();
                 }, 2000);
             } catch (e) {
-                console.error("Copy message failed:", e);
+                console.error('Copy message failed:', e);
             }
         }
 
-        // Interactive Chat Studio Send Handler
         async function handleChatSend(e) {
             if (e) e.preventDefault();
             const inputEl = document.getElementById('chat-user-input');
@@ -678,20 +768,15 @@
             const chatMessages = document.getElementById('chat-messages');
             if (!chatMessages) return;
 
-            // Render User Message
             const userHtml = `
                 <div class="flex gap-4 max-w-3xl mx-auto justify-end">
-                    <div class="bg-amber-500 text-slate-950 font-medium rounded-2xl p-3.5 text-xs max-w-xl shadow-md whitespace-pre-wrap">
-                        ${escapeHtml(message)}
-                    </div>
+                    <div class="bg-amber-500 text-slate-950 font-medium rounded-2xl p-3.5 text-xs max-w-xl shadow-md whitespace-pre-wrap">${escapeHtml(message)}</div>
                 </div>
             `;
             chatMessages.insertAdjacentHTML('beforeend', userHtml);
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
             const botId = 'chat-msg-' + Date.now();
-
-            // Loading indicator
             const botHtml = `
                 <div class="flex gap-4 max-w-3xl mx-auto">
                     <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-500 to-orange-600 flex items-center justify-center text-slate-950 font-bold shrink-0 shadow-md">
@@ -725,7 +810,6 @@
             try {
                 const aiReply = await fetchGeminiAIResponse(message);
                 const normalizedText = normalizeBambaraPhoneticText(aiReply);
-
                 const botMsgDiv = document.getElementById(botId);
                 const playBtn = document.getElementById(`btn-${botId}`);
                 const copyBtn = document.getElementById(`copy-btn-${botId}`);
@@ -733,39 +817,36 @@
                 if (botMsgDiv) {
                     botMsgDiv.classList.remove('italic', 'text-slate-300');
                     botMsgDiv.classList.add('text-slate-100');
-                    botMsgDiv.innerText = aiReply;
+                    botMsgDiv.textContent = aiReply;
                 }
 
                 if (playBtn) {
                     playBtn.disabled = false;
-                    playBtn.className = "flex items-center gap-1.5 px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition text-xs shadow-md cursor-pointer";
+                    playBtn.className = 'flex items-center gap-1.5 px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition text-xs shadow-md cursor-pointer';
                     playBtn.onclick = () => playBambaraAudio(normalizedText);
                 }
 
                 if (copyBtn) {
                     copyBtn.disabled = false;
-                    copyBtn.className = "flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold rounded-xl transition text-xs cursor-pointer";
-                    copyBtn.onclick = function() { copyChatMessageText(aiReply, this); };
+                    copyBtn.className = 'flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold rounded-xl transition text-xs cursor-pointer';
+                    copyBtn.onclick = () => copyChatMessageText(aiReply, copyBtn);
                 }
 
-                // Auto Play Response Audio
                 playBambaraAudio(normalizedText);
-
             } catch (err) {
-                console.error("Gemini Chat error:", err);
+                console.error('Gemini Chat error:', err);
                 const botMsgDiv = document.getElementById(botId);
-                if (botMsgDiv) botMsgDiv.innerText = "I ni ce! (" + (err.message || "Error") + ")";
+                if (botMsgDiv) botMsgDiv.textContent = 'I ni ce! (' + (err.message || 'Error') + ')';
             }
         }
 
-        // --- CAMERA & VISION FEATURE ---
         async function startCamera() {
             const video = document.getElementById('camera-feed');
             const placeholder = document.getElementById('camera-placeholder');
             const captureBtn = document.getElementById('capture-cam-btn');
 
             if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                alert("Kamera te se ka wuli fɛɛrɛ nin kan.");
+                alert('Kamera te se ka wuli fɛɛrɛ nin kan.');
                 return;
             }
 
@@ -777,8 +858,11 @@
                 }
                 if (placeholder) placeholder.classList.add('hidden');
                 if (captureBtn) captureBtn.disabled = false;
+                const statusEl = document.getElementById('cam-status');
+                if (statusEl) statusEl.textContent = 'Kamera bɛ wuli';
             } catch (err) {
-                alert("Kamera fili: " + err.message);
+                console.warn('Camera start failed:', err);
+                alert('Kamera fili: ' + (err.message || 'permission denied'));
             }
         }
 
@@ -795,7 +879,7 @@
                 if (placeholder) placeholder.classList.remove('hidden');
                 if (captureBtn) captureBtn.disabled = true;
             } catch (e) {
-                console.warn("Error stopping camera stream:", e);
+                console.warn('Error stopping camera stream:', e);
             }
         }
 
@@ -803,12 +887,11 @@
             const video = document.getElementById('camera-feed');
             const canvas = document.getElementById('camera-canvas');
             if (!video || !canvas) return;
-            const ctx = canvas.getContext('2d');
 
+            const ctx = canvas.getContext('2d');
             canvas.width = video.videoWidth || 640;
             canvas.height = video.videoHeight || 480;
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
             const base64Image = canvas.toDataURL('image/png').split(',')[1];
             await processImageForBambara(base64Image);
         }
@@ -820,9 +903,7 @@
             const reader = new FileReader();
             reader.onload = async function(event) {
                 const base64Image = event.target?.result?.split(',')[1];
-                if (base64Image) {
-                    await processImageForBambara(base64Image);
-                }
+                if (base64Image) await processImageForBambara(base64Image);
             };
             reader.readAsDataURL(file);
         }
@@ -832,63 +913,52 @@
             const resultBox = document.getElementById('cam-extracted-text');
             const playBtn = document.getElementById('cam-play-btn');
 
-            if (statusEl) statusEl.innerText = "Sɛbɛnni kalanni...";
-            if (resultBox) resultBox.innerText = "100 kɛmɛ, 2027 bafila ani mugan ni wolonwula, 2026 bafila ani mugan ni wɔɔrɔ.";
+            if (statusEl) statusEl.textContent = 'Sɛbɛnni kalanni...';
 
-            const sampleExtracted = "100 kɛmɛ, 2027 bafila ani mugan ni wolonwula, 2026 bafila ani mugan ni wɔɔrɔ.";
-            const normalized = normalizeBambaraPhoneticText(sampleExtracted);
+            const sampleText = '100: kɛmɛ. G7: Ji wolonwula. 7: wolonwula. 2027: bafila ani mugan ni wolonwula. 2026: bafila ani mugan ni wɔɔrɔ. 4nan: naaninan. 4,8: naani n\'a kunkanfɛn seegin. 2029: bafila ani mugan ni kɔnɔntɔn. 2030: bafila ani bisaba. 33% kɛmɛsarada la bisaba ni saba.';
+            const normalized = normalizeBambaraPhoneticText(sampleText);
 
-            if (resultBox) resultBox.innerText = normalized;
-            if (statusEl) statusEl.innerText = "Kalan dafa la";
-
+            if (resultBox) resultBox.textContent = normalized;
+            if (statusEl) statusEl.textContent = 'Kalan dafa la';
             if (playBtn) {
                 playBtn.disabled = false;
-                playBtn.className = "w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs flex items-center justify-center gap-2 shadow cursor-pointer";
+                playBtn.className = 'w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs flex items-center justify-center gap-2 shadow cursor-pointer';
             }
-            
+
             playBambaraAudio(normalized);
         }
 
         function playExtractedCamText() {
             const resultBox = document.getElementById('cam-extracted-text');
             if (!resultBox) return;
-            const text = resultBox.innerText;
+            const text = resultBox.textContent;
             playBambaraAudio(text);
         }
 
-        // --- MEDIA GENERATOR (IMAGE & VIDEO) ---
         async function generateAIImage() {
             const promptInput = document.getElementById('image-prompt-input');
-            if (!promptInput) return;
-            const prompt = promptInput.value.trim() || "Mali culture Bambara flashcards";
-
+            const prompt = promptInput ? (promptInput.value.trim() || 'Mali culture Bambara flashcards') : 'Mali culture Bambara flashcards';
             const container = document.getElementById('image-result-container');
             const btn = document.getElementById('gen-img-btn');
 
             if (btn) btn.disabled = true;
-
             if (container) {
-                const imgUrl = `https://placehold.co/600x400/0f172a/fbbf24?text=${encodeURIComponent(prompt)}`;
-                container.innerHTML = `
-                    <img src="${imgUrl}" class="w-full h-full object-cover rounded-xl" />
-                `;
+                const imageText = encodeURIComponent(prompt);
+                container.innerHTML = `<img src="https://placehold.co/600x400/0f172a/fbbf24?text=${imageText}" class="w-full h-full object-cover rounded-xl" />`;
             }
-
             if (btn) btn.disabled = false;
         }
 
         async function generateAIVideo() {
             const promptInput = document.getElementById('video-prompt-input');
-            const prompt = promptInput?.value.trim() || "Bamanankan jatew kalansen (2026, 2027, 2030)";
+            const prompt = promptInput ? (promptInput.value.trim() || 'Bamanankan jatew kalansen (2026, 2027, 2030)') : 'Bamanankan jatew kalansen (2026, 2027, 2030)';
             const container = document.getElementById('video-result-container');
             const btn = document.getElementById('gen-vid-btn');
-
             const normalizedPromptText = normalizeBambaraPhoneticText(prompt);
 
             if (container) {
                 const safePrompt = escapeHtml(prompt);
                 const safeNormalized = escapeHtml(normalizedPromptText);
-                
                 container.innerHTML = `
                     <div class="w-full h-full bg-slate-950 p-6 flex flex-col justify-between items-center text-center relative rounded-xl border border-slate-800">
                         <div class="space-y-2 my-auto">
@@ -903,35 +973,31 @@
                         </div>
                     </div>
                 `;
-            }
-            
-            const playBtn = document.getElementById('play-video-audio-btn');
-            if (playBtn) {
-                playBtn.onclick = () => playBambaraAudio(normalizedPromptText);
+                if (window.lucide && typeof window.lucide.createIcons === 'function') lucide.createIcons();
             }
 
-            if (window.lucide && typeof window.lucide.createIcons === 'function') lucide.createIcons();
+            const playBtn = document.getElementById('play-video-audio-btn');
+            if (playBtn) playBtn.onclick = () => playBambaraAudio(normalizedPromptText);
             playBambaraAudio(normalizedPromptText);
         }
 
-        // Preset Test Trigger
         function testPreset(type) {
-            let sample = "";
+            let sample = '';
             switch (type) {
                 case '100':
-                    sample = "100: kɛmɛ. G7: Ji wolonwula. 7: wolonwula.";
+                    sample = '100: kɛmɛ. G7: Ji wolonwula. 7: wolonwula.';
                     break;
                 case '2027':
-                    sample = "2027: bafila ani mugan ni wolonwula. 2026: bafila ani mugan ni wɔɔrɔ. 2029: bafila ani mugan ni kɔnɔntɔn. 2030: bafila ani bisaba.";
+                    sample = '2027: bafila ani mugan ni wolonwula. 2026: bafila ani mugan ni wɔɔrɔ. 2029: bafila ani mugan ni kɔnɔntɔn. 2030: bafila ani bisaba.';
                     break;
                 case '33%':
-                    sample = "33% kɛmɛsarada la bisaba ni saba.";
+                    sample = '33% kɛmɛsarada la bisaba ni saba.';
                     break;
                 case '4,8':
-                    sample = "4nan: naaninan. 4,8: naani n'a kunkanfɛn seegin.";
+                    sample = '4nan: naaninan. 4,8: naani n\'a kunkanfɛn seegin.';
                     break;
                 case 'FULL':
-                    sample = "100: kɛmɛ. G7: Ji wolonwula. 7: wolonwula. 2027: bafila ani mugan ni wolonwula. cogo. cogoya. 2026: bafila ani mugan ni wɔɔrɔ. 4nan: naaninan. 4,8: naani n'a kunkanfɛn seegin. 2029: bafila ani mugan ni kɔnɔntɔn. 2030: bafila ani bisaba. 33% kɛmɛsarada la bisaba ni saba.";
+                    sample = '100: kɛmɛ. G7: Ji wolonwula. 7: wolonwula. 2027: bafila ani mugan ni wolonwula. cogo. cogoya. 2026: bafila ani mugan ni wɔɔrɔ. 4nan: naaninan. 4,8: naani n\'a kunkanfɛn seegin. 2029: bafila ani mugan ni kɔnɔntɔn. 2030: bafila ani bisaba. 33% kɛmɛsarada la bisaba ni saba.';
                     break;
             }
 
@@ -941,58 +1007,44 @@
             processAndReadDocument();
         }
 
-        // Interactive Speech Recognition Microphone Toggle
         function toggleChatMic() {
             const micBtn = document.getElementById('chat-mic-btn');
             const inputEl = document.getElementById('chat-user-input');
             const statusBanner = document.getElementById('mic-status-banner');
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+            if (!SpeechRecognition) {
+                alert('Kuma da-fɔli fɛɛrɛ te se ka kɛ am\'i ka fɛɛrɛ la.');
+                return;
+            }
 
             if (!isRecording) {
-                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                if (!SpeechRecognition) {
-                    alert("Kuma da-fɔli fɛɛrɛ te se ka kɛ am'i ka fɛɛrɛ la.");
-                    return;
-                }
                 try {
                     speechRecognitionInstance = new SpeechRecognition();
                     speechRecognitionInstance.continuous = true;
                     speechRecognitionInstance.interimResults = true;
-
                     speechRecognitionInstance.onstart = () => {
                         isRecording = true;
-                        if (micBtn) {
-                            micBtn.className = "p-2.5 rounded-xl bg-red-500 text-white animate-pulse transition border border-red-400 flex items-center gap-1 shadow-lg shadow-red-500/30 cursor-pointer";
-                        }
+                        if (micBtn) micBtn.className = 'p-2.5 rounded-xl bg-red-500 text-white animate-pulse transition border border-red-400 flex items-center gap-1 shadow-lg shadow-red-500/30 cursor-pointer';
                         if (statusBanner) statusBanner.classList.remove('hidden');
                     };
-
                     speechRecognitionInstance.onresult = (event) => {
                         let finalTranscript = '';
-                        for (let i = event.resultIndex; i < event.results.length; ++i) {
+                        for (let i = event.resultIndex; i < event.results.length; i += 1) {
                             finalTranscript += event.results[i][0].transcript;
                         }
-                        if (finalTranscript && inputEl) {
-                            inputEl.value = finalTranscript;
-                        }
+                        if (finalTranscript && inputEl) inputEl.value = finalTranscript;
                     };
-
-                    speechRecognitionInstance.onerror = (err) => {
-                        console.warn("Speech recognition error:", err);
-                        stopRecordingUI();
-                    };
-
-                    speechRecognitionInstance.onend = () => {
-                        stopRecordingUI();
-                    };
-
+                    speechRecognitionInstance.onerror = () => { stopRecordingUI(); };
+                    speechRecognitionInstance.onend = () => { stopRecordingUI(); };
                     speechRecognitionInstance.start();
-                } catch(e) {
-                    console.error("Speech recognition start error:", e);
+                } catch (e) {
+                    console.error('Speech recognition start error:', e);
                     stopRecordingUI();
                 }
             } else {
                 if (speechRecognitionInstance) {
-                    try { speechRecognitionInstance.stop(); } catch(e) {}
+                    try { speechRecognitionInstance.stop(); } catch (e) {}
                 }
                 stopRecordingUI();
             }
@@ -1002,18 +1054,30 @@
             isRecording = false;
             const micBtn = document.getElementById('chat-mic-btn');
             const statusBanner = document.getElementById('mic-status-banner');
-            if (micBtn) {
-                micBtn.className = "p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition border border-slate-700 flex items-center gap-1 cursor-pointer";
-            }
+            if (micBtn) micBtn.className = 'p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition border border-slate-700 flex items-center gap-1 cursor-pointer';
             if (statusBanner) statusBanner.classList.add('hidden');
         }
 
-        function escapeHtml(text) {
-            if (!text) return "";
-            const div = document.createElement('div');
-            div.innerText = text;
-            return div.innerHTML;
+        function downloadCurrentAudio() {
+            const statusEl = document.getElementById('reader-status');
+            if (statusEl) statusEl.textContent = 'Download te se ka kɛ am’i ka fɛɛrɛ la.';
         }
+
+        if (window.speechSynthesis) {
+            window.speechSynthesis.onvoiceschanged = () => {
+                const selectedVoice = getPreferredVoice();
+                if (selectedVoice && document.getElementById('current-voice-indicator')) {
+                    document.getElementById('current-voice-indicator').textContent = document.getElementById('gemini-voice-select')?.value || 'Zephyr';
+                }
+            };
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            restoreVoiceSelection();
+            const keyInput = document.getElementById('user-api-key');
+            if (keyInput) keyInput.value = getApiKey();
+            if (window.lucide && typeof window.lucide.createIcons === 'function') lucide.createIcons();
+        });
     </script>
 </body>
 </html>
