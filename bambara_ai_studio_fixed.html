@@ -21,24 +21,20 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: radial-gradient(circle at top, rgba(245, 158, 11, 0.18), transparent 26%), #020817;
+      background: radial-gradient(circle at top, rgba(245, 158, 11, 0.18), transparent 25%), #020817;
     }
     .glass {
-      background: rgba(15, 23, 42, 0.78);
-      border: 1px solid rgba(148, 163, 184, 0.2);
+      background: rgba(15, 23, 42, 0.80);
+      border: 1px solid rgba(148, 163, 184, 0.18);
       backdrop-filter: blur(8px);
     }
     .active-tab {
-      background: rgba(245, 158, 11, 0.14);
+      background: rgba(245, 158, 11, 0.13);
       border-color: rgba(251, 191, 36, 0.38);
       color: #fbbf24 !important;
     }
-    .animate-ring {
-      animation: pulse 1.8s infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.05); opacity: 0.85; }
+    .recording {
+      box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.7);
     }
   </style>
 </head>
@@ -56,7 +52,7 @@
 
     <div class="flex items-center gap-3 text-xs">
       <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900/80 border border-slate-700 text-slate-300">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ring"></span>
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
         <span>Kan: <strong class="text-amber-400" id="voice-indicator">Bamanankan</strong></span>
       </div>
     </div>
@@ -121,12 +117,16 @@
               <i data-lucide="square" class="w-4 h-4"></i>
               Dabila
             </button>
+            <button onclick="copyPreview()" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs border border-slate-700">
+              <i data-lucide="copy" class="w-4 h-4"></i>
+              Kopi
+            </button>
           </div>
 
           <div class="mt-4 rounded-2xl border border-slate-800 bg-slate-950 p-4">
             <div class="flex items-center justify-between gap-3 mb-2">
               <span class="text-[11px] font-semibold uppercase tracking-wider text-amber-400">Kalan-nin fili</span>
-              <button onclick="copyPreview()" class="text-[11px] text-slate-400">Kopi</button>
+              <button onclick="downloadCurrentText()" class="text-[11px] text-slate-400">Download</button>
             </div>
             <div id="preview" class="min-h-[90px] text-sm text-slate-200 leading-relaxed whitespace-pre-wrap">Sɛbɛnni labɛnnen bɛna bɔ yan...</div>
           </div>
@@ -190,6 +190,39 @@
             </div>
           </div>
         </div>
+
+        <div class="glass rounded-2xl p-4 space-y-4">
+          <div class="flex items-center justify-between gap-3">
+            <h3 class="text-base font-bold flex items-center gap-2"><i data-lucide="message-square" class="w-4 h-4 text-amber-400"></i> Baro</h3>
+            <span id="chat-status" class="text-[10px] text-slate-400">Baro bɛ ready</span>
+          </div>
+
+          <div id="chat-box" class="space-y-3 max-h-[280px] overflow-y-auto pr-1"></div>
+
+          <div class="space-y-3">
+            <textarea id="chat-input" rows="3" placeholder="Aw ka baro sɛbɛn yan..." class="w-full rounded-xl border border-slate-800 bg-slate-950 p-3 text-sm outline-none focus:border-amber-500"></textarea>
+            <div class="flex flex-wrap gap-3">
+              <button onclick="sendChat()" class="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs">Ci</button>
+              <button id="chat-mic-btn" onclick="toggleChatMic()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs">Mikrofon</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass rounded-2xl p-4 space-y-4">
+          <div class="flex items-center justify-between gap-3">
+            <h3 class="text-base font-bold flex items-center gap-2"><i data-lucide="mic" class="w-4 h-4 text-amber-400"></i> Mikrofɔn</h3>
+            <span id="mic-status" class="text-[10px] text-slate-400">Mikrofon bɛ ready</span>
+          </div>
+
+          <div class="flex flex-wrap gap-3">
+            <button id="start-mic-btn" onclick="startMicRecording()" class="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs">Kɛ ka rɛrɛ</button>
+            <button id="stop-mic-btn" onclick="stopMicRecording()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs">Dabila</button>
+            <button id="play-mic-btn" onclick="playMicRecording()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs" disabled>Lamɛn</button>
+            <button id="download-mic-btn" onclick="downloadMicRecording()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs" disabled>Download</button>
+          </div>
+
+          <audio id="mic-audio" controls class="w-full hidden"></audio>
+        </div>
       </section>
     </div>
   </main>
@@ -198,6 +231,14 @@
     const STORAGE_KEY = 'bambara_studio_api_key';
     const VOICE_STORAGE_KEY = 'bambara_studio_voice';
     let currentCameraStream = null;
+    let micStream = null;
+    let micRecorder = null;
+    let micChunks = [];
+    let micBlobUrl = null;
+    let chatMicActive = false;
+    let chatMicRecorder = null;
+    let chatMicStream = null;
+    let chatMicChunks = [];
 
     function normalizeBambaraPhoneticText(text) {
       if (!text || typeof text !== 'string') return '';
@@ -264,28 +305,17 @@
       return result.filter(Boolean);
     }
 
-    function escapeHtml(value = '') {
-      return String(value)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-    }
-
-    function selectBestVoice() {
+    function getPreferredVoice() {
       const voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
       const selected = document.getElementById('voice-select')?.value || 'Bamanankan';
       const preferred = {
-        Bamanankan: ['Google Français', 'Microsoft Denise', 'Microsoft Paul', 'Ariane', 'Amelie', 'Thomas', 'Google UK English Female'],
+        Bamanankan: ['Google Français', 'Microsoft Denise', 'Microsoft Paul', 'Ariane', 'Amelie', 'Thomas'],
         Faranse: ['Google Français', 'Microsoft Denise', 'Ariane', 'Amelie', 'Microsoft Paul'],
         Angilɛkan: ['Google US English', 'Samantha', 'Ava', 'Microsoft Aria', 'Google UK English Female']
       };
-
       const wanted = preferred[selected] || preferred.Bamanankan;
-      const current = voices.find(v => wanted.some(keyword => v.name.toLowerCase().includes(keyword.toLowerCase()) || keyword.toLowerCase().includes(v.name.toLowerCase())));
-      if (current) return current;
-      return voices.find(v => /fr|en/i.test(v.lang)) || voices[0] || null;
+      const selectedVoice = voices.find(v => wanted.some(keyword => v.name.toLowerCase().includes(keyword.toLowerCase())));
+      return selectedVoice || voices.find(v => /fr|en/i.test(v.lang)) || voices[0] || null;
     }
 
     function saveVoiceSelection() {
@@ -308,10 +338,9 @@
       if (!clean) return;
       const synth = window.speechSynthesis;
       if (!synth) {
-        alert('Kuma lamɛnni te se ka kɛ nin fɛɛrɛ la.');
+        alert('Kuma lamɛnni te se ka kɛ nin browser la.');
         return;
       }
-
       synth.cancel();
       const sentences = chunkText(clean, 210);
       let index = 0;
@@ -319,7 +348,7 @@
       function speakNext() {
         if (index >= sentences.length) return;
         const utterance = new SpeechSynthesisUtterance(sentences[index]);
-        const selected = selectBestVoice();
+        const selected = getPreferredVoice();
         if (selected) {
           utterance.voice = selected;
           utterance.lang = selected.lang || 'fr-FR';
@@ -327,14 +356,8 @@
         utterance.rate = parseFloat(document.getElementById('rate-slider')?.value || '0.9');
         utterance.pitch = parseFloat(document.getElementById('pitch-slider')?.value || '1.15');
         utterance.volume = 1;
-        utterance.onend = () => {
-          index += 1;
-          speakNext();
-        };
-        utterance.onerror = () => {
-          index += 1;
-          speakNext();
-        };
+        utterance.onend = () => { index += 1; speakNext(); };
+        utterance.onerror = () => { index += 1; speakNext(); };
         synth.speak(utterance);
       }
 
@@ -382,6 +405,21 @@
         document.execCommand('copy');
         temp.remove();
       });
+      const status = document.getElementById('chat-status');
+      if (status) status.textContent = 'Kopi kɛra';
+    }
+
+    function downloadCurrentText() {
+      const preview = document.getElementById('preview');
+      const text = preview ? preview.textContent.trim() : '';
+      if (!text) return;
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'bambara_text.txt';
+      a.click();
+      URL.revokeObjectURL(url);
     }
 
     async function startCamera() {
@@ -458,7 +496,7 @@
       reader.readAsDataURL(file);
     }
 
-    function processImageFromBase64(base64) {
+    function processImageFromBase64() {
       const sample = 'Bamanankan jatew: 100: kɛmɛ. G7: Ji wolonwula. 2027: bafila ani mugan ni wolonwula. Ja bɛ ka jatew fara a kɔnɔ.';
       const normalized = normalizeBambaraPhoneticText(sample);
       const preview = document.getElementById('preview');
@@ -530,6 +568,149 @@
       if (input) input.value = saved;
     }
 
+    function addChatMessage(text, isUser = false) {
+      const box = document.getElementById('chat-box');
+      const row = document.createElement('div');
+      row.className = `rounded-xl border p-3 text-sm ${isUser ? 'bg-amber-500 text-slate-950 border-amber-300' : 'bg-slate-900 border-slate-700 text-slate-100'}`;
+      row.textContent = text;
+      box.appendChild(row);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function sendChat() {
+      const input = document.getElementById('chat-input');
+      const text = input ? input.value.trim() : '';
+      if (!text) return;
+      addChatMessage(text, true);
+      input.value = '';
+      const reply = 'Aw ni ce! A ka baro bɛna ka jɔ. A bɛna ka kɛ ni Bamanankan fɔli.';
+      addChatMessage(reply, false);
+      readTextOut(reply);
+    }
+
+    function toggleChatMic() {
+      if (!chatMicActive) {
+        startChatMic();
+      } else {
+        stopChatMic();
+      }
+    }
+
+    async function startChatMic() {
+      const status = document.getElementById('chat-status');
+      try {
+        chatMicStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        chatMicRecorder = new MediaRecorder(chatMicStream);
+        chatMicChunks = [];
+        chatMicRecorder.ondataavailable = (event) => {
+          if (event.data.size > 0) chatMicChunks.push(event.data);
+        };
+        chatMicRecorder.onstop = () => {
+          const blob = new Blob(chatMicChunks, { type: 'audio/webm' });
+          const url = URL.createObjectURL(blob);
+          const input = document.getElementById('chat-input');
+          if (input) input.value = 'Aw ka kuma bɛ ka ta. A ka duuru ka kɛ.';
+          const audio = document.createElement('audio');
+          audio.src = url;
+          audio.controls = true;
+          audio.className = 'w-full mt-2';
+          const box = document.getElementById('chat-box');
+          box.appendChild(audio);
+          if (status) status.textContent = 'Kuma rekɔrdi kɛra';
+        };
+        chatMicRecorder.start();
+        chatMicActive = true;
+        if (status) status.textContent = 'Kuma bɛ rekɔrdi...';
+        const btn = document.getElementById('chat-mic-btn');
+        if (btn) btn.textContent = 'Dabila';
+      } catch (err) {
+        console.warn('Chat mic error:', err);
+        if (status) status.textContent = 'Mikrofon te se ka wuli';
+      }
+    }
+
+    function stopChatMic() {
+      if (chatMicRecorder && chatMicRecorder.state !== 'inactive') {
+        chatMicRecorder.stop();
+      }
+      if (chatMicStream) {
+        chatMicStream.getTracks().forEach(t => t.stop());
+      }
+      chatMicActive = false;
+      const btn = document.getElementById('chat-mic-btn');
+      if (btn) btn.textContent = 'Mikrofon';
+      const status = document.getElementById('chat-status');
+      if (status) status.textContent = 'Kuma rekɔrdi dafa';
+    }
+
+    function startMicRecording() {
+      const status = document.getElementById('mic-status');
+      const audio = document.getElementById('mic-audio');
+      const playBtn = document.getElementById('play-mic-btn');
+      const downloadBtn = document.getElementById('download-mic-btn');
+
+      navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+        micStream = stream;
+        micRecorder = new MediaRecorder(stream);
+        micChunks = [];
+        micRecorder.ondataavailable = (event) => {
+          if (event.data.size > 0) micChunks.push(event.data);
+        };
+        micRecorder.onstop = () => {
+          const blob = new Blob(micChunks, { type: 'audio/webm' });
+          micBlobUrl = URL.createObjectURL(blob);
+          if (audio) {
+            audio.src = micBlobUrl;
+            audio.classList.remove('hidden');
+            audio.controls = true;
+          }
+          if (playBtn) playBtn.disabled = false;
+          if (downloadBtn) downloadBtn.disabled = false;
+          if (status) status.textContent = 'Kuma rekɔrdi kɛra';
+        };
+        micRecorder.start();
+        if (status) status.textContent = 'Kuma bɛ rekɔrdi...';
+      }).catch(err => {
+        console.warn('Mic error:', err);
+        if (status) status.textContent = 'Mikrofon te se ka wuli';
+      });
+    }
+
+    function stopMicRecording() {
+      if (micRecorder && micRecorder.state !== 'inactive') micRecorder.stop();
+      if (micStream) micStream.getTracks().forEach(t => t.stop());
+      const status = document.getElementById('mic-status');
+      if (status) status.textContent = 'Mikrofon dafa';
+    }
+
+    function playMicRecording() {
+      const audio = document.getElementById('mic-audio');
+      if (audio && micBlobUrl) {
+        audio.play();
+      }
+    }
+
+    function downloadMicRecording() {
+      const audio = document.getElementById('mic-audio');
+      if (!audio || !micBlobUrl) return;
+      const a = document.createElement('a');
+      a.href = micBlobUrl;
+      a.download = 'bambara_recording.webm';
+      a.click();
+    }
+
+    function saveApiKey() {
+      const key = document.getElementById('api-key')?.value.trim() || '';
+      if (key) localStorage.setItem(STORAGE_KEY, key);
+      else localStorage.removeItem(STORAGE_KEY);
+    }
+
+    function loadApiKey() {
+      const saved = localStorage.getItem(STORAGE_KEY) || '';
+      const input = document.getElementById('api-key');
+      if (input) input.value = saved;
+    }
+
     document.getElementById('voice-select')?.addEventListener('change', saveVoiceSelection);
     document.getElementById('rate-slider')?.addEventListener('input', () => {
       const value = document.getElementById('rate-slider')?.value || '0.9';
@@ -552,7 +733,7 @@
       if (rate) rate.textContent = `${parseFloat(document.getElementById('rate-slider')?.value || '0.9').toFixed(2)}x`;
       const pitch = document.getElementById('pitch-value');
       if (pitch) pitch.textContent = parseFloat(document.getElementById('pitch-slider')?.value || '1.15').toFixed(2);
-      if ('speechSynthesis' in window) window.speechSynthesis.onvoiceschanged = () => selectBestVoice();
+      if ('speechSynthesis' in window) window.speechSynthesis.onvoiceschanged = () => getPreferredVoice();
     });
   </script>
 </body>
