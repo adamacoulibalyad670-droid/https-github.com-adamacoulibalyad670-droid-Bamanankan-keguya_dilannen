@@ -57,8 +57,6 @@
           <label class="text-[11px] uppercase tracking-wider text-slate-400">Kanw</label>
           <select id="voice-select" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs outline-none focus:border-amber-500">
             <option value="Bamanankan">Bamanankan</option>
-            <option value="French">French</option>
-            <option value="English">English</option>
           </select>
         </div>
 
@@ -324,9 +322,7 @@
       const voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
       const selected = document.getElementById('voice-select')?.value || 'Bamanankan';
       const preferred = {
-        Bamanankan: ['Google Français', 'Microsoft Denise', 'Ariane', 'Amelie', 'Paul'],
-        French: ['Google Français', 'Microsoft Denise', 'Ariane', 'Amelie', 'Paul'],
-        English: ['Google US English', 'Samantha', 'Ava', 'Microsoft Aria']
+        Bamanankan: ['Google Français', 'Microsoft Denise', 'Ariane', 'Amelie', 'Paul']
       };
       const wanted = preferred[selected] || preferred.Bamanankan;
       const match = voices.find(v => wanted.some(k => v.name.toLowerCase().includes(k.toLowerCase())));
@@ -576,7 +572,7 @@
       if (chatSpeechRecognition) return chatSpeechRecognition;
 
       const recognition = new SpeechRecognition();
-      recognition.lang = 'ar-SA';
+      recognition.lang = 'fr-FR';
       recognition.continuous = false;
       recognition.interimResults = true;
       recognition.maxAlternatives = 1;
